@@ -1,9 +1,3 @@
-Claro\! Aqui está um arquivo `README.md` completo e bem estruturado que explica em detalhes o funcionamento do projeto, com foco especial na lógica contida no `index.js`.
-
-Você pode copiar e colar este conteúdo diretamente em um novo arquivo chamado `README.md` na raiz do seu projeto.
-
------
-
 # Calculadora de IMC - Node.js e Express
 
 Este é um projeto educacional simples que implementa uma calculadora de Índice de Massa Corporal (IMC). A aplicação consiste em um formulário web onde o usuário insere seu nome, altura e peso, e um backend em Node.js que processa esses dados, calcula o IMC e retorna o resultado com a classificação correspondente.
