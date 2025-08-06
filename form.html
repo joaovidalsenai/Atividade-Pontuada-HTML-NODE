@@ -5,63 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de IMC</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-        h1 {
-            color: #333;
+        /* Estilos permanecem os mesmos */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background-color: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { color: #333; text-align: center; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #555; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 0.75rem; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #0056b3; }
+        
+        /* Estilo para a área de resultado */
+        #resultado {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 4px;
+            background-color: #e9ecef;
             text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #555;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
+            font-size: 1.1rem;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Calculadora de IMC</h1>
-        <form action="/imc" method="POST">
+        <form id="imcForm">
             <div class="form-group">
                 <label for="nome">Nome:</label>
                 <input type="text" id="nome" name="nome" required>
@@ -76,6 +45,43 @@
             </div>
             <button type="submit">Calcular</button>
         </form>
+
+        <div id="resultado"></div>
     </div>
+
+    <script>
+        const form = document.getElementById('imcForm');
+        const resultadoDiv = document.getElementById('resultado');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const dados = new URLSearchParams(formData);
+
+            try {
+                const response = await fetch('/imc', {
+                    method: 'POST',
+                    body: dados
+                });
+                
+                const resultado = await response.json();
+
+                if (response.ok) {
+                    resultadoDiv.innerHTML = `
+                        <p>Olá, <strong>${resultado.nome}</strong>!</p>
+                        <p>Seu IMC é <strong>${resultado.imc}</strong>.</p>
+                        <p>Sua classificação é: <strong>${resultado.categoria}</strong>.</p>
+                    `;
+                } else {
+                    resultadoDiv.innerHTML = `<p style="color: red;">Erro: ${resultado.erro}</p>`;
+                }
+
+            } catch (error) {
+                console.error('Falha na requisição:', error);
+                resultadoDiv.innerHTML = `<p style="color: red;">Não foi possível conectar ao servidor.</p>`;
+            }
+        });
+    </script>
 </body>
 </html>
